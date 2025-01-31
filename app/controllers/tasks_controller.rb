@@ -14,31 +14,29 @@ class TasksController < BaseController
   def create
     @task = @user.tasks.build(task_params)
     if @task.save
-      render :show, status: :created
+      render json: @task, serializer: TaskSerializer, status: :ok
     else
-      render json: { message: @task.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def update
     if @task.update(task_params)
-      render :show, status: :ok
+      render json: @task, serializer: TaskSerializer
     else
-      render json: { message: @task.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def destroy
     @task.destroy
-    render :show, status: :ok
+    render json: @task, serializer: TaskSerializer, status: :ok
   end
 
   private
 
   def authorize_post
-    unless @user == @task.user
-      render json: { message: "Unauthorized" }, status: :unauthorized
-    end
+    render json: { message: "Unauthorized" }, status: :unauthorized unless @user == @task.user
   end
 
   def set_task
