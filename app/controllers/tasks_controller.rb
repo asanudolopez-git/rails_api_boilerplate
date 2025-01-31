@@ -1,13 +1,14 @@
 class TasksController < BaseController
   before_action :set_task, only: [:show, :update, :destroy]
+  before_action :authorize_post, only: %i[show update destroy]
 
   def index
-    debugger
     @tasks = @user.tasks
     render json: @tasks, each_serializer: TaskSerializer
   end
 
   def show
+    render json: @task, serializer: TaskSerializer
   end
 
   def create
@@ -33,6 +34,12 @@ class TasksController < BaseController
   end
 
   private
+
+  def authorize_post
+    unless @user == @task.user
+      render json: { message: "Unauthorized" }, status: :unauthorized
+    end
+  end
 
   def set_task
     @task = Task.find(params[:id])
