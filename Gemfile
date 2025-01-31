@@ -49,6 +49,6 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 end
 
-
-
 gem "graphql", "~> 2.4"
+gem "lockbox", "~> 2.0"
+gem "blind_index", "~> 2.6"
